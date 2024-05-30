@@ -466,7 +466,7 @@ ParseTree* CompilerParser::compileReturn() {
     // add keyword rerturn
     tree->addChild(mustBe("keyword", "return"));
 
-    if (have("expression", current()->getValue())){
+    if (!have("symbol", ";")){
         // add expression
         tree->addChild(compileExpression());
     }
