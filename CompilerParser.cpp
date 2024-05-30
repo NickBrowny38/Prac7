@@ -285,7 +285,7 @@ ParseTree* CompilerParser::compileStatements() {
     else if(have("keyword", "return")){
         tree->addChild(compileReturn());
     }
-    
+    /*
     // subsequent statements
     while (current() != NULL && have("symbol", ";")){
         tree->addChild(mustBe("symbol", ";"));
@@ -307,7 +307,7 @@ ParseTree* CompilerParser::compileStatements() {
             tree->addChild(compileReturn());
         }
     }
-
+*/
     return tree;
 }
 
