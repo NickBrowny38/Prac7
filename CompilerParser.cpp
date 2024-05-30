@@ -211,7 +211,7 @@ ParseTree* CompilerParser::compileSubroutineBody() {
  */
 ParseTree* CompilerParser::compileVarDec() {
     // create passtree
-    ParseTree* tree = new ParseTree("classVarDec", "");
+    ParseTree* tree = new ParseTree("varDec", "");
 
     // add keyword var
     tree->addChild(mustBe("keyword", "var"));
@@ -238,7 +238,49 @@ ParseTree* CompilerParser::compileVarDec() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileStatements() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("statements", "");
+
+    // first statement
+    if (have("letStatement", current()->getValue())){
+        tree->addChild(compileLet());
+    }// statements
+    else if(have("ifStatement", current()->getValue())){
+        tree->addChild(compileIf());
+    }
+    else if(have("whileStatement", current()->getValue())){
+        tree->addChild(compileWhile());
+    }
+    else if(have("doStatement", current()->getValue())){
+        tree->addChild(compileDo());
+    }
+    else if(have("returnStatement", current()->getValue())){
+        tree->addChild(compileReturn());
+    }
+    
+    // subsequent statements
+    while (have("symbol", ";")){
+        tree->addChild(mustBe("symbol", ";"));
+        
+        // statements types
+        if (have("letStatement", current()->getValue())){
+            tree->addChild(compileLet());
+        }
+        else if(have("ifStatement", current()->getValue())){
+            tree->addChild(compileIf());
+        }
+        else if(have("whileStatement", current()->getValue())){
+            tree->addChild(compileWhile());
+        }
+        else if(have("doStatement", current()->getValue())){
+            tree->addChild(compileDo());
+        }
+        else if(have("returnStatement", current()->getValue())){
+            tree->addChild(compileReturn());
+        }
+    }
+
+    return tree;
 }
 
 /**
@@ -246,7 +288,32 @@ ParseTree* CompilerParser::compileStatements() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileLet() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("letStatement", "");
+
+    // add keyword let
+    tree->addChild(mustBe("keyword", "let"));
+
+    // add variable
+    tree->addChild(mustBe("identifier", current()->getValue()));
+
+    if (have("symbol", "[")){
+        tree->addChild(mustBe("symbol", "["));
+        // add expression 1
+        tree->addChild(compileExpression());
+        tree->addChild(mustBe("symbol", "]"));
+    }
+
+    // add '='
+    tree->addChild(mustBe("symbol", "="));
+
+    // add expression 2
+    tree->addChild(compileExpression());
+
+    // add semi-colon
+    tree->addChild(mustBe("symbol", ";"));
+
+    return tree;
 }
 
 /**
@@ -254,7 +321,43 @@ ParseTree* CompilerParser::compileLet() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileIf() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("ifStatement", "");
+
+    // add keyword if
+    tree->addChild(mustBe("keyword", "if"));
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "("));
+
+    // add expression
+    tree->addChild(compileExpression());
+
+    // add close bracket
+    tree->addChild(mustBe("symbol", ")"));
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "{"));
+
+    // add statements
+    tree->addChild(compileStatements());
+
+    // add closed brackets
+    tree->addChild(mustBe("symbol", "}"));
+
+    // else functionality
+    while (have("keyword", "else")){
+        // add open bracket
+        tree->addChild(mustBe("symbol", "{"));
+
+        // add statements
+        tree->addChild(compileStatements());
+
+        // add closed brackets
+        tree->addChild(mustBe("symbol", "}"));
+    }
+
+    return tree;
 }
 
 /**
@@ -262,7 +365,31 @@ ParseTree* CompilerParser::compileIf() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileWhile() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("whileStatement", "");
+
+    // add keyword while
+    tree->addChild(mustBe("keyword", "while"));
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "("));
+
+    // add expression
+    tree->addChild(compileExpression());
+
+    // add close bracket
+    tree->addChild(mustBe("symbol", ")"));
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "{"));
+
+    // add statements
+    tree->addChild(compileStatements());
+
+    // add closed brackets
+    tree->addChild(mustBe("symbol", "}"));
+
+    return tree;
 }
 
 /**
@@ -270,7 +397,19 @@ ParseTree* CompilerParser::compileWhile() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileDo() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("doStatement", "");
+
+    // add keyword do
+    tree->addChild(mustBe("keyword", "do"));
+
+    // add expression
+    tree->addChild(compileExpression());
+
+    // add semi-colon
+    tree->addChild(mustBe("symbol", ";"));
+
+    return tree;
 }
 
 /**
@@ -278,7 +417,21 @@ ParseTree* CompilerParser::compileDo() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileReturn() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("returnStatement", "");
+
+    // add keyword rerturn
+    tree->addChild(mustBe("keyword", "return"));
+
+    if (have("expression", current()->getValue())){
+        // add expression
+        tree->addChild(compileExpression());
+    }
+
+    // add semi-colon
+    tree->addChild(mustBe("symbol", ";"));
+
+    return tree;
 }
 
 /**
@@ -286,7 +439,19 @@ ParseTree* CompilerParser::compileReturn() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileExpression() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("expression", "");
+
+    if (have("keyword", "skip")){
+        // add keyword skip
+        tree->addChild(mustBe("keyword", "skip"));
+    }
+    else{
+        // add term
+        tree->addChild(current());
+    }
+
+    return tree;
 }
 
 /**
