@@ -49,7 +49,7 @@ ParseTree* CompilerParser::compileClass() {
     tree->addChild(mustBe("symbol", "{"));
 
     // add variable decleration
-    tree->addChild(mustBe("classVarDec", current()->getValue()));
+    tree->addChild(compileClassVarDec());
 
     // add close bracket
     tree->addChild(mustBe("symbol", "}"));
