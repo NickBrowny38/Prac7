@@ -16,37 +16,17 @@ ParseTree* CompilerParser::compileProgram() {
     // create passtree
     ParseTree* tree = new ParseTree("class", "");
 
-    // check for keyword class token
-    if (have("keyword", "class") == false){
-        throw ParseException();
-    }
-    ParseTree* child1 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child1);
-    next();
+    // add keyword class
+    tree->addChild(mustBe("keyword", "class"));
 
-    // check for identifier
-    if (have("identifier", current()->getValue()) == false){
-        throw ParseException();
-    }
-    ParseTree* child2 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child2);
-    next();
+    // add identifier
+    tree->addChild(mustBe("identifier", current()->getValue()));
 
-    // check for first symbol
-    if (have("symbol", "{") == false){
-        throw ParseException();
-    }
-    ParseTree* child3 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child3);
-    next();
+    // add open bracket
+    tree->addChild(mustBe("symbol", "{"));
 
-    // check for second symbol
-    if (have("symbol", "}") == false){
-        throw ParseException();
-    }
-    ParseTree* child4 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child4);
-    next();
+    // add close bracket
+    tree->addChild(mustBe("symbol", "}"));
 
     return tree;
 }
@@ -59,7 +39,8 @@ ParseTree* CompilerParser::compileClass() {
     // create passtree
     ParseTree* tree = new ParseTree("class", "");
 
-    tree->addChild(mustBe(current()->getType(), current()->getValue()));
+    mustBe("keyword", "class");
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for identifier
@@ -102,7 +83,10 @@ ParseTree* CompilerParser::compileClassVarDec() {
     ParseTree* tree = new ParseTree("classVarDec", "");
     
     // check for keyword static
-    tree->addChild(mustBe("keyword", "static"));
+    if (have("keyword", "static") == false){
+        throw ParseException();
+    }
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for keyword int
@@ -269,8 +253,9 @@ bool CompilerParser::have(std::string expectedType, std::string expectedValue){
  */
 Token* CompilerParser::mustBe(std::string expectedType, std::string expectedValue){
     if (have(expectedType, expectedValue) == true){
+        Token* curr = new Token(expectedType, expectedValue);
         next();
-        return current();
+        return curr;
     }
     else{
         throw ParseException();
