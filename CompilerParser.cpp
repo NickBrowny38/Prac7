@@ -48,12 +48,12 @@ ParseTree* CompilerParser::compileClass() {
     // add open bracket
     tree->addChild(mustBe("symbol", "{"));
 
-    while (current() != NULL && (have("classVarDec", current()->getValue()) || have("varDec", current()->getValue()))){
+    while (current() != NULL && have("keyword", current()->getValue())){
         // add variable decleration
-        if (have("classVarDec", current()->getValue())){
+        if (have("keyword", "static") || have("keyword", "field")){
             tree->addChild(compileClassVarDec());
         }
-        else if(have("varDec", current()->getValue())){
+        else if(have("keyword", "function") || have("keyword", "constructor") || have("keyword", "method")){
             tree->addChild(compileVarDec());
         }
     }
