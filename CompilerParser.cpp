@@ -379,24 +379,23 @@ ParseTree* CompilerParser::compileIf() {
     // add open bracket
     tree->addChild(mustBe("symbol", "{"));
 
-    if (!have("symbol", "}")){
-        // add statements
-        tree->addChild(compileStatements());
-    }
+    // add statements
+    tree->addChild(compileStatements());
 
     // add closed brackets
     tree->addChild(mustBe("symbol", "}"));
 
     // else functionality
     while (current() != NULL && have("keyword", "else")){
+        // add else
+        tree->addChild(mustBe("keyword", "else"));
+        
         // add open bracket
         tree->addChild(mustBe("symbol", "{"));
 
-        if (!have("symbol", "}")){
-            // add statements
-            tree->addChild(compileStatements());
-        }
-        
+        // add statements
+        tree->addChild(compileStatements());
+
         // add closed brackets
         tree->addChild(mustBe("symbol", "}"));
     }
