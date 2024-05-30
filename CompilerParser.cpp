@@ -69,10 +69,10 @@ ParseTree* CompilerParser::compileClassVarDec() {
     tree->addChild(mustBe("keyword", "static"));
 
     // add keyword int
-    tree->addChild(mustBe("keyword", "int"));
+    tree->addChild(mustBe("keyword", current()->getValue()));
 
     // add identifier
-    tree->addChild(mustBe("identifier", "a"));
+    tree->addChild(mustBe("identifier", current()->getValue()));
 
     // add semi-colon
     tree->addChild(mustBe("symbol", ";"));
