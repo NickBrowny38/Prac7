@@ -56,7 +56,74 @@ ParseTree* CompilerParser::compileProgram() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileClass() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("class", "");
+
+    // check for keyword class token
+    if (have("keyword", "class") == false){
+        throw ParseException();
+    }
+    ParseTree* child1 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child1);
+    next();
+
+    // check for identifier
+    if (have("identifier", current()->getValue()) == false){
+        throw ParseException();
+    }
+    ParseTree* child2 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child2);
+    next();
+
+    // check for open bracket
+    if (have("symbol", "{") == false){
+        throw ParseException();
+    }
+    ParseTree* child3 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child3);
+    next();
+
+    // check for keyword static
+    if (have("keyword", "static") == false){
+        throw ParseException();
+    }
+    ParseTree* child4 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child4);
+    next();
+
+    // check for keyword int
+    if (have("keyword", "int") == false){
+        throw ParseException();
+    }
+    ParseTree* child5 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child5);
+    next();
+
+    // check for identifier
+    if (have("identifier", current()->getValue()) == false){
+        throw ParseException();
+    }
+    ParseTree* child6 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child6);
+    next();
+
+    // check for semi-colon
+    if (have("symbol", ";") == false){
+        throw ParseException();
+    }
+    ParseTree* child7 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child7);
+    next();
+
+    // check for close bracket
+    if (have("symbol", "}") == false){
+        throw ParseException();
+    }
+    ParseTree* child8 = new ParseTree(current()->getType(), current()->getValue());
+    tree->addChild(child8);
+    next();
+
+    return tree;
 }
 
 /**
