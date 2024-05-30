@@ -50,7 +50,12 @@ ParseTree* CompilerParser::compileClass() {
 
     while (!have("symbol", "}")){
         // add variable decleration
-        tree->addChild(compileClassVarDec());
+        if (have("keyword", "static") || have("keyword", "field")){
+            tree->addChild(compileClassVarDec());
+        }
+        else if(have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")){
+            tree->addChild(compileSubroutine());
+        }
     }
 
     // add close bracket
@@ -100,7 +105,42 @@ ParseTree* CompilerParser::compileClassVarDec() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutine() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("subroutine", "");
+
+    // add keyword type
+    if (have("keyword", "function")){
+        tree->addChild(mustBe("keyword", "function"));
+    }
+    else if (have("keyword", "constructor")){
+        tree->addChild(mustBe("keyword", "cunstructor"));
+    }
+    else if (have("keyword", "method")){
+        tree->addChild(mustBe("keyword", "method"));
+    }
+    else{
+        throw ParseException();
+    }
+
+    // add keyword func type
+    tree->addChild(mustBe("keyword", current()->getValue()));
+
+    // add identifier
+    tree->addChild(mustBe("identifier", current()->getValue()));
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "("));
+
+    // add parameter list
+    tree->addChild(compileParameterList());
+
+    // add close bracket
+    tree->addChild(mustBe("symbol", ")"));
+
+    // add subroutine body
+    tree->addChild(compileSubroutineBody());
+
+    return tree;
 }
 
 /**
@@ -108,7 +148,24 @@ ParseTree* CompilerParser::compileSubroutine() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileParameterList() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("parameterList", "");
+
+    if (have("keyword", current()->getValue())){
+        // add keyword variable
+        tree->addChild(mustBe("keyword", current()->getValue()));
+
+        // add identifier
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
+
+    while (have("symbol", ",")){
+        tree->addChild(mustBe("symbol", ","));
+        tree->addChild(mustBe("keyword", current()->getValue()));
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
+
+    return tree;
 }
 
 /**
@@ -116,7 +173,36 @@ ParseTree* CompilerParser::compileParameterList() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutineBody() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("subroutineBody", "");
+
+    // add open bracket
+    tree->addChild(mustBe("symbol", "{"));
+
+    
+        // add keyword variable
+        tree->addChild(mustBe("keyword", current()->getValue()));
+
+        // add identifier
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    
+    // add body
+    while (have("symbol", ";")){
+        tree->addChild(mustBe("symbol", ";"));
+        
+        // variable declerations
+        if (have("varDec", current()->getValue())){
+            tree->addChild(compileVarDec());
+        }// statements
+        else if(have("statements", current()->getValue())){
+            tree->addChild(compileStatements());
+        }
+    }
+
+    // add close bracket
+    tree->addChild(mustBe("symbol", "}"));
+
+    return tree;
 }
 
 /**
@@ -124,7 +210,27 @@ ParseTree* CompilerParser::compileSubroutineBody() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileVarDec() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("classVarDec", "");
+
+    // add keyword var
+    tree->addChild(mustBe("keyword", "var"));
+
+    // add keyword variable
+    tree->addChild(mustBe("keyword", current()->getValue()));
+
+    // add identifier
+    tree->addChild(mustBe("identifier", current()->getValue()));
+
+    while (have("symbol", ",")){
+        tree->addChild(mustBe("symbol", ","));
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
+
+    // add semi-colon
+    tree->addChild(mustBe("symbol", ";"));
+
+    return tree;
 }
 
 /**
