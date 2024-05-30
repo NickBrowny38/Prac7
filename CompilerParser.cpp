@@ -116,7 +116,7 @@ ParseTree* CompilerParser::compileSubroutine() {
         tree->addChild(mustBe("keyword", "function"));
     }
     else if (have("keyword", "constructor")){
-        tree->addChild(mustBe("keyword", "cunstructor"));
+        tree->addChild(mustBe("keyword", "constructor"));
     }
     else if (have("keyword", "method")){
         tree->addChild(mustBe("keyword", "method"));
