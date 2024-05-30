@@ -83,8 +83,8 @@ ParseTree* CompilerParser::compileClassVarDec() {
         throw ParseException();
     }
 
-    // add keyword variable
-    tree->addChild(mustBe("keyword", current()->getValue()));
+    // add type variable
+    tree->addChild(mustBe("type", current()->getValue()));
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
@@ -152,8 +152,8 @@ ParseTree* CompilerParser::compileParameterList() {
     ParseTree* tree = new ParseTree("parameterList", "");
 
     if (have("keyword", current()->getValue())){
-        // add keyword variable
-        tree->addChild(mustBe("keyword", current()->getValue()));
+        // add variable type
+        tree->addChild(mustBe("type", current()->getValue()));
 
         // add identifier
         tree->addChild(mustBe("identifier", current()->getValue()));
@@ -178,13 +178,14 @@ ParseTree* CompilerParser::compileSubroutineBody() {
 
     // add open bracket
     tree->addChild(mustBe("symbol", "{"));
-
     
-        // add keyword variable
-        tree->addChild(mustBe("keyword", current()->getValue()));
-
-        // add identifier
-        tree->addChild(mustBe("identifier", current()->getValue()));
+    // variable declerations
+    if (have("varDec", current()->getValue())){
+        tree->addChild(compileVarDec());
+    }// statements
+    else if(have("statements", current()->getValue())){
+        tree->addChild(compileStatements());
+    }
     
     // add body
     while (current() != NULL && have("symbol", ";")){
@@ -216,8 +217,8 @@ ParseTree* CompilerParser::compileVarDec() {
     // add keyword var
     tree->addChild(mustBe("keyword", "var"));
 
-    // add keyword variable
-    tree->addChild(mustBe("keyword", current()->getValue()));
+    // add type variable
+    tree->addChild(mustBe("type", current()->getValue()));
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
