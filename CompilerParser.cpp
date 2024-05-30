@@ -84,7 +84,7 @@ ParseTree* CompilerParser::compileClassVarDec() {
     }
 
     // add type variable
-    tree->addChild(mustBe("type", current()->getValue()));
+    tree->addChild(mustBe("keyword", current()->getValue()));
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
@@ -153,7 +153,7 @@ ParseTree* CompilerParser::compileParameterList() {
 
     if (have("keyword", current()->getValue())){
         // add variable type
-        tree->addChild(mustBe("type", current()->getValue()));
+        tree->addChild(mustBe("keyword", current()->getValue()));
 
         // add identifier
         tree->addChild(mustBe("identifier", current()->getValue()));
@@ -218,7 +218,7 @@ ParseTree* CompilerParser::compileVarDec() {
     tree->addChild(mustBe("keyword", "var"));
 
     // add type variable
-    tree->addChild(mustBe("type", current()->getValue()));
+    tree->addChild(mustBe("keyword", current()->getValue()));
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
