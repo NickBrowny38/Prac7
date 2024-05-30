@@ -48,7 +48,7 @@ ParseTree* CompilerParser::compileClass() {
     // add open bracket
     tree->addChild(mustBe("symbol", "{"));
 
-    while (!have("symbol", "}")){
+    while (current() != NULL && !have("symbol", "}")){
         // add variable decleration
         if (have("keyword", "static") || have("keyword", "field")){
             tree->addChild(compileClassVarDec());
@@ -89,7 +89,7 @@ ParseTree* CompilerParser::compileClassVarDec() {
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
 
-    while (have("symbol", ",")){
+    while (current() != NULL && have("symbol", ",")){
         tree->addChild(mustBe("symbol", ","));
         tree->addChild(mustBe("identifier", current()->getValue()));
     }
@@ -159,7 +159,7 @@ ParseTree* CompilerParser::compileParameterList() {
         tree->addChild(mustBe("identifier", current()->getValue()));
     }
 
-    while (have("symbol", ",")){
+    while (current() != NULL && have("symbol", ",")){
         tree->addChild(mustBe("symbol", ","));
         tree->addChild(mustBe("keyword", current()->getValue()));
         tree->addChild(mustBe("identifier", current()->getValue()));
@@ -187,7 +187,7 @@ ParseTree* CompilerParser::compileSubroutineBody() {
         tree->addChild(mustBe("identifier", current()->getValue()));
     
     // add body
-    while (have("symbol", ";")){
+    while (current() != NULL && have("symbol", ";")){
         tree->addChild(mustBe("symbol", ";"));
         
         // variable declerations
@@ -222,7 +222,7 @@ ParseTree* CompilerParser::compileVarDec() {
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
 
-    while (have("symbol", ",")){
+    while (current() != NULL && have("symbol", ",")){
         tree->addChild(mustBe("symbol", ","));
         tree->addChild(mustBe("identifier", current()->getValue()));
     }
@@ -259,7 +259,7 @@ ParseTree* CompilerParser::compileStatements() {
     }
     
     // subsequent statements
-    while (have("symbol", ";")){
+    while (current() != NULL && have("symbol", ";")){
         tree->addChild(mustBe("symbol", ";"));
         
         // statements types
@@ -346,7 +346,7 @@ ParseTree* CompilerParser::compileIf() {
     tree->addChild(mustBe("symbol", "}"));
 
     // else functionality
-    while (have("keyword", "else")){
+    while (current() != NULL && have("keyword", "else")){
         // add open bracket
         tree->addChild(mustBe("symbol", "{"));
 
