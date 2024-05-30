@@ -66,7 +66,7 @@ ParseTree* CompilerParser::compileClassVarDec() {
     ParseTree* tree = new ParseTree("classVarDec", "");
 
     // add keyword static
-    if (current()->getValue() == "static"){
+    if (have("keyword", "static")){
         tree->addChild(mustBe("keyword", "static"));
     }
     else if (current()->getValue() == "field"){
@@ -76,11 +76,16 @@ ParseTree* CompilerParser::compileClassVarDec() {
         throw ParseException();
     }
 
-    // add keyword int
-    tree->addChild(mustBe("keyword", "int"));
+    // add keyword variable
+    tree->addChild(mustBe("keyword", current()->getValue()));
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
+
+    while (have("symbol", ",")){
+        tree->addChild(mustBe("symbol", ","));
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
 
     // add semi-colon
     tree->addChild(mustBe("symbol", ";"));
