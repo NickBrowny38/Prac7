@@ -215,7 +215,7 @@ ParseTree* CompilerParser::compileSubroutineBody() {
     }
     
     // add body
-    while (current() != NULL && have("symbol", ";")){
+    while (current() != NULL && have("keyword", ";")){
         tree->addChild(mustBe("symbol", ";"));
         
         // variable declerations
