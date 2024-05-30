@@ -207,10 +207,10 @@ ParseTree* CompilerParser::compileSubroutineBody() {
     tree->addChild(mustBe("symbol", "{"));
     
     // variable declerations
-    if (have("varDec", current()->getValue())){
+    if (have("keyword", "var")){
         tree->addChild(compileVarDec());
     }// statements
-    else if(have("statements", current()->getValue())){
+    else if(have("keyword", "let") || have("keyword", "if") || have("keyword", "while") || have("keyword", "do") || have("keyword", "return")){
         tree->addChild(compileStatements());
     }
     
@@ -219,10 +219,10 @@ ParseTree* CompilerParser::compileSubroutineBody() {
         tree->addChild(mustBe("symbol", ";"));
         
         // variable declerations
-        if (have("varDec", current()->getValue())){
+        if (have("keyword", "var")){
             tree->addChild(compileVarDec());
         }// statements
-        else if(have("statements", current()->getValue())){
+        else if(have("keyword", "let") || have("keyword", "if") || have("keyword", "while") || have("keyword", "do") || have("keyword", "return")){
             tree->addChild(compileStatements());
         }
     }
