@@ -50,11 +50,11 @@ ParseTree* CompilerParser::compileClass() {
 
     while (current() != NULL && !have("symbol", "}")){
         // add variable decleration
-        if (have("keyword", "static") || have("keyword", "field")){
+        if (have("classVarDec", current()->getValue())){
             tree->addChild(compileClassVarDec());
         }
-        else if(have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")){
-            tree->addChild(compileSubroutine());
+        else if(have("varDec", current()->getValue()){
+            tree->addChild(compileVarDec());
         }
     }
 
