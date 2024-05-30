@@ -297,8 +297,10 @@ ParseTree* CompilerParser::compileStatements() {
     }
     
     // subsequent statements
-    while (current() != NULL && have("symbol", ";")){
-        tree->addChild(mustBe("symbol", ";"));
+    while (current() != NULL && (have("symbol", ";") || have("keyword", current()->getValue()))){
+        if (have("symbol", ";")){
+            tree->addChild(mustBe("symbol", ";"));
+        }
         
         // statements types
         if (have("keyword", "let")){
