@@ -59,44 +59,35 @@ ParseTree* CompilerParser::compileClass() {
     // create passtree
     ParseTree* tree = new ParseTree("class", "");
 
-    // check for keyword class token
-    if (have("keyword", "class") == false){
-        throw ParseException();
-    }
-    ParseTree* child1 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child1);
+    tree->addChild(mustBe(current()->getType(), current()->getValue()));
     next();
 
     // check for identifier
     if (have("identifier", current()->getValue()) == false){
         throw ParseException();
     }
-    ParseTree* child2 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child2);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for open bracket
     if (have("symbol", "{") == false){
         throw ParseException();
     }
-    ParseTree* child3 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child3);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for variable decleration
     if (have("classVarDec", current()->getValue()) == false){
         throw ParseException();
     }
-    ParseTree* child4 = compileClassVarDec();
-    tree->addChild(child4);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for close bracket
     if (have("symbol", "}") == false){
         throw ParseException();
     }
-    ParseTree* child5 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child5);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     return tree;
@@ -111,35 +102,28 @@ ParseTree* CompilerParser::compileClassVarDec() {
     ParseTree* tree = new ParseTree("classVarDec", "");
     
     // check for keyword static
-    if (have("keyword", "static") == false){
-        throw ParseException();
-    }
-    ParseTree* child1 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child1);
+    tree->addChild(mustBe("keyword", "static"));
     next();
 
     // check for keyword int
     if (have("keyword", "int") == false){
         throw ParseException();
     }
-    ParseTree* child2 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child2);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for identifier
     if (have("identifier", current()->getValue()) == false){
         throw ParseException();
     }
-    ParseTree* child3 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child3);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     // check for semi-colon
     if (have("symbol", ";") == false){
         throw ParseException();
     }
-    ParseTree* child4 = new ParseTree(current()->getType(), current()->getValue());
-    tree->addChild(child4);
+    tree->addChild(new ParseTree(current()->getType(), current()->getValue()));
     next();
 
     return tree;
