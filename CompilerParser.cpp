@@ -169,6 +169,13 @@ ParseTree* CompilerParser::compileParameterList() {
         // add identifier
         tree->addChild(mustBe("identifier", current()->getValue()));
     }
+    else if (have("identifier", current()->getValue())){
+        // add variable type
+        tree->addChild(mustBe("identifier", current()->getValue()));
+
+        // add identifier
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
 
     while (current() != NULL && have("symbol", ",")){
         tree->addChild(mustBe("symbol", ","));
