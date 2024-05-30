@@ -54,7 +54,10 @@ ParseTree* CompilerParser::compileClass() {
             tree->addChild(compileClassVarDec());
         }
         else if(have("keyword", "function") || have("keyword", "constructor") || have("keyword", "method")){
-            tree->addChild(compileVarDec());
+            tree->addChild(compileSubroutine());
+        }
+        else{
+            throw ParseException();
         }
     }
 
