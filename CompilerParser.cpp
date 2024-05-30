@@ -126,7 +126,15 @@ ParseTree* CompilerParser::compileSubroutine() {
     }
 
     // add keyword func type
-    tree->addChild(mustBe("keyword", current()->getValue()));
+    if (have("keyword", current()->getValue())){
+        tree->addChild(mustBe("keyword", current()->getValue()));
+    }
+    else if (have("identifier", current()->getValue())){
+        tree->addChild(mustBe("identifier", current()->getValue()));
+    }
+    else{
+        throw ParseException();
+    }
 
     // add identifier
     tree->addChild(mustBe("identifier", current()->getValue()));
