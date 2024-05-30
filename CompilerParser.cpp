@@ -270,19 +270,19 @@ ParseTree* CompilerParser::compileStatements() {
     ParseTree* tree = new ParseTree("statements", "");
 
     // first statement
-    if (have("letStatement", current()->getValue())){
+    if (have("keyword", "let")){
         tree->addChild(compileLet());
     }// statements
-    else if(have("ifStatement", current()->getValue())){
+    else if(have("keyword", "if")){
         tree->addChild(compileIf());
     }
-    else if(have("whileStatement", current()->getValue())){
+    else if(have("keyword", "while")){
         tree->addChild(compileWhile());
     }
-    else if(have("doStatement", current()->getValue())){
+    else if(have("keyword", "do")){
         tree->addChild(compileDo());
     }
-    else if(have("returnStatement", current()->getValue())){
+    else if(have("keyword", "return")){
         tree->addChild(compileReturn());
     }
     
@@ -291,19 +291,19 @@ ParseTree* CompilerParser::compileStatements() {
         tree->addChild(mustBe("symbol", ";"));
         
         // statements types
-        if (have("letStatement", current()->getValue())){
+        if (have("keyword", "let")){
             tree->addChild(compileLet());
-        }
-        else if(have("ifStatement", current()->getValue())){
+        }// statements
+        else if(have("keyword", "if")){
             tree->addChild(compileIf());
         }
-        else if(have("whileStatement", current()->getValue())){
+        else if(have("keyword", "while")){
             tree->addChild(compileWhile());
         }
-        else if(have("doStatement", current()->getValue())){
+        else if(have("keyword", "do")){
             tree->addChild(compileDo());
         }
-        else if(have("returnStatement", current()->getValue())){
+        else if(have("keyword", "return")){
             tree->addChild(compileReturn());
         }
     }
