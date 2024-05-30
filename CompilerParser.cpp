@@ -53,7 +53,7 @@ ParseTree* CompilerParser::compileClass() {
         if (have("classVarDec", current()->getValue())){
             tree->addChild(compileClassVarDec());
         }
-        else if(have("varDec", current()->getValue()){
+        else if(have("varDec", current()->getValue())){
             tree->addChild(compileVarDec());
         }
     }
