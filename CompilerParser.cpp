@@ -490,8 +490,14 @@ ParseTree* CompilerParser::compileExpression() {
         tree->addChild(mustBe("keyword", "skip"));
     }
     else{
-        // add term
-        tree->addChild(current());
+        //if (current() != NULL && (have("identifier", current()->getValue()) || have("keyword", current()->getValue()) || have("integerConstant", current()->getValue()))){
+        
+        while (current() != NULL && !have("symbol", ")")){
+            tree->addChild(compileTerm());
+            if (current() != NULL && (have("symbol", "+") || have("symbol", "-") || have("symbol", "*") || have("symbol", "/") || have("symbol", "=") || have("symbol", ">") || have("symbol", "<") || have("symbol", "&") || have("symbol", "|"))){
+                tree->addChild(mustBe("symbol", current()->getValue()));
+            }
+        }
     }
 
     return tree;
@@ -502,7 +508,42 @@ ParseTree* CompilerParser::compileExpression() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileTerm() {
-    return NULL;
+    // create passtree
+    ParseTree* tree = new ParseTree("term", "");
+
+    if (have("integerConstant", current()->getValue())){
+        // add integer
+        tree->addChild(mustBe("integerConstant", current()->getValue()));
+    }
+    else if (have("identifier", current()->getValue())){
+        tree->addChild(mustBe("identifier", current()->getValue()));
+
+        // add expression if 'varName[expression]'
+        if (have("symbol", "[")){
+            tree->addChild(mustBe("symbol", "["));
+            tree->addChild(compileExpression());
+            tree->addChild(mustBe("symbol", "]"));
+        }
+    }
+    else if (have("stringConstant", current()->getValue())){
+        tree->addChild(mustBe("stringConstant", current()->getValue()));
+    }
+    else if (have("symbol", "(")){
+        tree->addChild(mustBe("symbol", "("));
+        tree->addChild(compileExpression());
+        tree->addChild(mustBe("symbol", ")"));
+    }
+    else if (have("keyword", "function") || have("keyword", "constructor") || have("keyword", "method")){
+        tree->addChild(compileSubroutine());
+    }
+    else if (have("keyword", "true") || have("keyword", "false") || have("keyword", "null") || have("keyword", "this")){
+        tree->addChild(mustBe("keyword", current()->getValue()));
+    }
+    else{
+        throw ParseException();
+    }
+
+    return tree;
 }
 
 /**
