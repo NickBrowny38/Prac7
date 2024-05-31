@@ -492,7 +492,7 @@ ParseTree* CompilerParser::compileExpression() {
     else{
         //if (current() != NULL && (have("identifier", current()->getValue()) || have("keyword", current()->getValue()) || have("integerConstant", current()->getValue()))){
         
-        while (current() != NULL && !have("symbol", ")")){
+        while (current() != NULL && !(have("symbol", ")") || have("symbol", ","))){
             tree->addChild(compileTerm());
             if (current() != NULL && (have("symbol", "+") || have("symbol", "-") || have("symbol", "*") || have("symbol", "/") || have("symbol", "=") || have("symbol", ">") || have("symbol", "<") || have("symbol", "&") || have("symbol", "|"))){
                 tree->addChild(mustBe("symbol", current()->getValue()));
@@ -519,23 +519,25 @@ ParseTree* CompilerParser::compileTerm() {
         tree->addChild(mustBe("identifier", current()->getValue()));
 
         // add expression if 'varName[expression]'
-        if (have("symbol", "[")){
-            tree->addChild(mustBe("symbol", "["));
-            tree->addChild(compileExpression());
-            tree->addChild(mustBe("symbol", "]"));
-        }
-        // subroutineCall
-        else if (have("symbol", "(")){
-            tree->addChild(mustBe("symbol", "("));
-            tree->addChild(compileExpressionList());
-            tree->addChild(mustBe("symbol", ")"));
-        }
-        else if (have("symbol", ".")){
-            tree->addChild(mustBe("symbol", "."));
-            tree->addChild(mustBe("identifier", current()->getValue()));
-            tree->addChild(mustBe("symbol", "("));
-            tree->addChild(compileExpressionList());
-            tree->addChild(mustBe("symbol", ")"));
+        if (current() != NULL){
+            if (have("symbol", "[")){
+                tree->addChild(mustBe("symbol", "["));
+                tree->addChild(compileExpression());
+                tree->addChild(mustBe("symbol", "]"));
+            }
+            // subroutineCall
+            else if (have("symbol", "(")){
+                tree->addChild(mustBe("symbol", "("));
+                tree->addChild(compileExpressionList());
+                tree->addChild(mustBe("symbol", ")"));
+            }
+            else if (have("symbol", ".")){
+                tree->addChild(mustBe("symbol", "."));
+                tree->addChild(mustBe("identifier", current()->getValue()));
+                tree->addChild(mustBe("symbol", "("));
+                tree->addChild(compileExpressionList());
+                tree->addChild(mustBe("symbol", ")"));
+            }
         }
     }
     else if (have("stringConstant", current()->getValue())){
@@ -565,7 +567,7 @@ ParseTree* CompilerParser::compileTerm() {
  */
 ParseTree* CompilerParser::compileExpressionList() {
     // create passtree
-    ParseTree* tree = new ParseTree("varDec", "");
+    ParseTree* tree = new ParseTree("expressionList", "");
 
     // add first expression
     tree->addChild(compileExpression());
